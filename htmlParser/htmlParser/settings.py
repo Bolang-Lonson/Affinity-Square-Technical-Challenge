@@ -55,7 +55,7 @@ ROOT_URLCONF = 'htmlParser.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['htmlParser/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
