@@ -10,12 +10,13 @@ def parse_url(url):
 
     try:
         response = requests.get(url)
+        status_code = response.status_code
         response.raise_for_status()
         error = ''
     except requests.RequestException as e:
         error = str(e)
+        return {'error': error}
     
-    status_code = response.status_code
     soup = BeautifulSoup(response.content, 'html.parser')
     
     # Determine HTML version (simple heuristic based on doctype)
