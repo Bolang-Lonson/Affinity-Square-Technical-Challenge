@@ -5,50 +5,70 @@
     {% load static %}
     <link rel="stylesheet" href="{% static "/css/bootstrap.min.css" %}">
     <script src="{% static "/js/bootstrap.bundle.js" %}"></script>
-    <title>Web Analyzer</title>
+    <title>URL HTML Analyser</title>
 </head>
 <body class='bg-light'>
     <main class="container-lg py-5">
-        <section class="row mt-5">
-            <div class="col-12 col-lg-6 text-center">
-                <h1>Web Analyzer</h1>
+        <section class="row mt-5 justify-content-between">
+            <div class="col-12 col-lg-5 text-center">
+                <h1 class='fs-1'>URL HTML Analyser</h1>
                 <form method="post">
                     {% csrf_token %}
                     {% for field in form %}
-                        <p class="form-control">{{ field.label_tag}}</p>
-                        <div class="form-group d-block">{{field}}</div>
+                        <label for="id_url" class='form-label my-4 lead float-start'>Enter URL:</label>
+                        {% comment %} <input type="text" value='{{field}}'> {% endcomment %}
+                        <input type="url" name="url" maxlength="300" required id="id_url" class='form-control mb-4'>
                     {% endfor %}
-                    <button type="submit" class='btn btn-lg btn-primary '>Analyze</button>
+                    <button type="submit" class='btn btn-lg btn-primary w-50 my-5'>Analyse</button>
                 </form>
             </div>
-            <div class="col-12 col-lg-6 bg-white p-5">
+            <div class="col-12 col-lg-5 bg-white p-5 border border-1 rounded-1 overflow-x-auto">
+                <h2 class='mb-2'>Analysis Results:</h2>
                 {% if results %}
-                    <h2>Analysis Results:</h2>
-                    <table>
+                    <table class='w-100 table table-striped'>
                         <tr>
                             <th>HTML Version</th>
-                            <td>{{ results.html_version }}</td>
+                            <td class='text-muted'>{{ results.html_version }}</td>
                         </tr>
                         <tr>
                             <th>Page Title</th>
-                            <td>{{ results.page_title }}</td>
+                            <td class='text-muted'>{{ results.page_title }}</td>
                         </tr>
                         <tr><th>Headings Count</th>
-                            <td>
+                            <td class='text-muted'>
                                 {% for level, count in results.num_headings.items %}
                                     {{ level }}: {{ count }}<br>
                                 {% endfor %}
                             </td>
                         </tr>
                         <tr><th>Links</th>
-                            <td>
+                            <td class='text-muted'>
                                 Internal: {{ results.num_links.internal }}<br>
                                 External: {{ results.num_links.external }}
                             </td>
                         </tr>
-                        <tr><th>Contains Login Form</th><td>{{ results.has_login_form }}</td></tr>
+                        <tr><th>Contains Login Form</th><td class='text-muted'>{{ results.has_login_form }}</td></tr>
                     </table>
                 {% endif %}
+            </div>
+        </section>
+        <section class="row mt-5">
+            <div class="col-12 bg-white border border-1 rounded-1 mw-100 p-3">
+                <h2 class='ms-5 mb-5'>Traffic Logs:</h2>
+                <table class='table table-striped'>
+                    <tr>
+                        <th>Status Code</th>
+                        <td class='ps-5'>{{results.status_code}}</td>
+                    </tr>
+                    <tr>
+                        <th>Error</th>
+                        <td class="ps-5">
+                            {% if results.error %}{{results.error}}
+                            {% else %}No Errors Occured
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
             </div>
         </section>
     </main>

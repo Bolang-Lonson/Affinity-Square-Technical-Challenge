@@ -7,12 +7,15 @@ from .forms import URLForm
 
 # Create your views here.
 def parse_url(url):
+
     try:
         response = requests.get(url)
         response.raise_for_status()
+        error = ''
     except requests.RequestException as e:
-        return {'error': str(e)}
-
+        error = str(e)
+    
+    status_code = response.status_code
     soup = BeautifulSoup(response.content, 'html.parser')
     
     # Determine HTML version (simple heuristic based on doctype)
@@ -68,6 +71,8 @@ def parse_url(url):
         'num_headings': num_headings,
         'num_links': num_links,
         'has_login_form': login_form and (login_btn or submit_btn),
+        'status_code': status_code,
+        'error': error
     }
 
     return result
